@@ -2,6 +2,7 @@
 
 // For scraping the site
 var cheerio = require("cheerio");
+var request = require("request");
 
 // // For keeping notes
 var express = require("express");
@@ -21,10 +22,31 @@ app.use(logger("dev"));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static("public"));
 
-mongoose.Promise = Promise;
-mongoose.connect("mongodb://localhost/gtbc-mongo-scraper", {
-    useMongoClient: true
+
+//B config with Mongoose
+var databaseUri = 'mongodb://localhost/imdbarticles';
+
+if (process.env.MONGODB_URI) {
+    mongoose.connect(process.env.MONGODB_URI);
+} else {
+    mongoose.connect(databaseUri);
+}
+
+var db = mongoose.connection;
+
+db.on("error", function (err) {
+    console.log("Mongoose Error: ", err);
 });
+
+db.once("open", function () {
+    console.log("Mongoose connection successful.");
+});
+
+
+// mongoose.Promise = Promise;
+// mongoose.connect("mongodb://localhost/gtbc-mongo-scraper", {
+//     useMongoClient: true
+// });
 
 
 // Routes ===================
