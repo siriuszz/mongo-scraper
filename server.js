@@ -13,7 +13,7 @@ var mongoose = require("mongoose");
 
 var db = require("./models");
 
-var PORT = 8080;
+var PORT = 3000;
 
 var app = express();
 
@@ -21,27 +21,6 @@ var app = express();
 app.use(logger("dev"));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static("public"));
-
-
-// Config with Mongoose
-// var databaseUri = 'mongodb://localhost/imdbarticles';
-//
-// if (process.env.MONGODB_URI) {
-//     mongoose.connect(process.env.MONGODB_URI);
-// } else {
-//     mongoose.connect(databaseUri);
-// }
-//
-// var db = mongoose.connection;
-//
-// db.on("error", function (err) {
-//     console.log("Mongoose Error: ", err);
-// });
-//
-// db.once("open", function () {
-//     console.log("Mongoose connection successful.");
-// });
-
 
 mongoose.Promise = Promise;
 mongoose.connect("mongodb://heroku_vmkrqd84:vk1am47r0ktnikeffcdgu1qe8@ds141786.mlab.com:41786/heroku_vmkrqd84", {
@@ -53,13 +32,13 @@ mongoose.connect("mongodb://heroku_vmkrqd84:vk1am47r0ktnikeffcdgu1qe8@ds141786.m
 
 //======================================================================
 
-// GET route for scraping the IMDB news page
+// GET route for scraping the Vulture movie news page
 app.get("/scrape", function(req, res) {
 
-    axios.get("http://www.imdb.com/news/top").then(function(response) {
+    axios.get("http://www.vulture.com/movies/").then(function(response) {
         var $ = cheerio.load(response.data);
 
-        $("h2.news-article__title").each(function(i, element) {
+        $("h2.entry-title").each(function(i, element) {
 
             var result = {};
 
